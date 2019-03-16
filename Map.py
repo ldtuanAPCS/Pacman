@@ -2,17 +2,6 @@ import PacMan as P
 import Ghost as G
 from copy import deepcopy as cp
 
-class Food(object):
-    def __init__(self, x, y):
-        self.position = x, y
-
-    def position(self):
-        return self.position
-
-    def __repr__(self):
-        st = "Food location: ", self.location[0], ", ", self.location[1] 
-        return str(st)
-
 class Map(object):
     def __init__(self, startState):
         self.map = cp(startState)
@@ -73,5 +62,26 @@ class Map(object):
     def move(self, target, x, y):
         posX = target.location[0]
         posY = target.location[1]
-        if isinstance(target, P.PacMan)
-        
+        if isinstance(target, P.PacMan):
+            if self.map[x][y] is '.':
+                self.remainingFood -= 1
+                self.removeFood(x ,y)
+                self.map[x][y]  = 'P'
+                self.map[posX][posY] = ' '
+                target.location = x, y
+        else:  #GHOST
+            if self.map[x][y] is '.':
+                self.map[x][y] = 'G'
+                if target.onFood:
+                    self.map[posX][posY] = '.'
+                    target.onFood = False
+                else: self.map[posX][posY] = ' '
+                target.onFood = False
+                target.location = x, y
+            else:
+                self.map[x][y] = 'G'
+                if target.onFood:
+                    self.map[posX][posY] = '.'
+                    target.onFood = False
+                else: self.map[posX][posY] = ' '
+                target.location = x, y
