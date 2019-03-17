@@ -2,6 +2,17 @@ import PacMan as P
 import Ghost as G
 from copy import deepcopy as cp
 
+class Food(object):
+    def __init__(self, x, y):
+        self.location = x, y
+    
+    def location(self):
+        return self.location
+
+    def __repr__(self):
+        st = "Food location: ", self.location[0], ", ", self.location[1] 
+        return str(st)
+
 class Map(object):
     def __init__(self, startState):
         self.map = cp(startState)
@@ -26,7 +37,7 @@ class Map(object):
         return None
 
     def findPacman(self, state):
-        PacmanPos = None
+#        PacmanPos = None
         for i in range(len(state)):
             for j in range(len(state[i])):
                 if state[i][j] == 'P': return i, j
