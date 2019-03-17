@@ -1,7 +1,9 @@
-import PacMan as P
+import Pacman as P
 import Ghost as G
+#import Food as F
+from Food import Food as F
 from copy import deepcopy as cp
-
+'''
 class Food(object):
     def __init__(self, x, y):
         self.location = x, y
@@ -12,7 +14,7 @@ class Food(object):
     def __repr__(self):
         st = "Food location: ", self.location[0], ", ", self.location[1] 
         return str(st)
-
+'''
 class Map(object):
     def __init__(self, startState):
         self.map = cp(startState)
@@ -29,6 +31,7 @@ class Map(object):
         y = item[1]
         return self.map[x][y]
 
+    #1 ghsot only
     def findGhost(self, state):
         for i in range(len(state)):
             for j in range(len(state[i])):
@@ -46,8 +49,11 @@ class Map(object):
         arr = []
         for x, i in enumerate(state):
             for y, j in enumerate(state[x]):
-                if j is '.': arr.append(Food(x,y))
+                if j is '.': arr.append(F(x,y))
         return arr
+
+    def getFood(self):
+        return self.food
 
     def __str__(self):
         value = ''
@@ -67,13 +73,10 @@ class Map(object):
         for f in self.food:
             if (f.location[0] == x and f.location[1] == y): self.food.remove(f)
 
-    def getFood(self):
-        return self.food
-
     def move(self, target, x, y):
         posX = target.location[0]
         posY = target.location[1]
-        if isinstance(target, P.PacMan):
+        if isinstance(target, P.Pacman):
             if self.map[x][y] is '.':
                 self.remainingFood -= 1
                 self.removeFood(x ,y)

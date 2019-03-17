@@ -1,4 +1,4 @@
-import copy as cp 
+from copy import deepcopy as cp
 from random import randint
 
 class Ghost(object):
@@ -24,10 +24,10 @@ class Ghost(object):
             act.append("right")
         return act
 
-    def doAction(self, maze, action):
-        if action == 'up': maze.move(self, self.location[0]-1, self.location[1])
-        elif action == 'down': maze.move(self, self.location[0]+1, self.location[1])
-        elif action == 'left': maze.move(self, self.location[0], self.location[1]-1)
+    def doAction(self, maze, act):
+        if act == 'up': maze.move(self, self.location[0]-1, self.location[1])
+        elif act == 'down': maze.move(self, self.location[0]+1, self.location[1])
+        elif act == 'left': maze.move(self, self.location[0], self.location[1]-1)
         else: maze.move(self, self.location[0], self.location[1]+1)
         
     def randomAction(self, maze):
@@ -35,4 +35,13 @@ class Ghost(object):
         act = actionSet[randint(0, len(self.actions(maze))-1)]
         return self.doAction(maze, act)
 
-        
+    def ghost_move(self, maze, posPacman):
+        dX = posPacman[1] - self.location[1]
+        dY = posPacman[0] - self.location[0]
+
+        for act in Ghost.actions(self, maze):
+            if (act == 'up') and (dY < 0): return Ghost.doAction(self, maze, act)            
+            if (act == 'left') and (dX < 0): return Ghost.doAction(self, maze, act)
+            if (act == 'down') and (dY > 0): return Ghost.doAction(self, maze, act)
+            if (act == 'right') and (dX > 0): return Ghost.doAction(self, maze, act)
+        return Ghost.randomAction(self, maze)
