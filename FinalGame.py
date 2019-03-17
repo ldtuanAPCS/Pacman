@@ -27,8 +27,8 @@ def eachRun(num, ghosts, p, maze, score, dead, level):
     num += 1
     return num, ghosts, p, maze, score, dead
 
-def beginGame(maze, p, level):
-    score, run, dead, ghosts = 0, 1, False, []
+def beginGame(maze, p, level, score):
+    run, dead, ghosts = 1, False, []
     while not p.gameOver(maze):
         print("Food left: \t", maze.remainingFood, "\t Score:  ", score)
         print(maze)
@@ -52,4 +52,4 @@ if __name__ == "__main__":
     score = 100
     level = 1
     print("You are given ",score,'points')
-    beginGame(maze, p, level)
+    beginGame(maze, p, level, score)
