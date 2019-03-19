@@ -26,6 +26,7 @@ class Map(object):
         self.remainingFood = self.calculateRemainingFood(startState)
         return
 
+
     def __getitem__(self, item):
         x = item[0]
         y = item[1]
@@ -83,6 +84,10 @@ class Map(object):
                 self.map[x][y]  = 'P'
                 self.map[posX][posY] = ' '
                 target.location = x, y
+            else: 
+                self.map[x][y] = 'P'
+                self.map[posX][posY] = ' '
+                target.location = x,y
         else:  #GHOST
             if self.map[x][y] is '.':
                 self.map[x][y] = 'G'
@@ -90,7 +95,7 @@ class Map(object):
                     self.map[posX][posY] = '.'
                     target.onFood = False
                 else: self.map[posX][posY] = ' '
-                target.onFood = False
+                target.onFood = True
                 target.location = x, y
             else:
                 self.map[x][y] = 'G'
