@@ -15,7 +15,7 @@ def getFood(state):
 def eachRun(num, ghosts, p, maze, score, dead, level, prevMove):
     numFood = maze.remainingFood
     if level == 4:
-        for ghost in ghosts: ghost.ghost_move(maze, p.location)
+        for ghost in ghosts: ghost.ghostMove(maze, p.location)
     if level < 3: p.pacmanMove(level, maze, ghosts)
     else: p.pacmanMove(level, maze, ghosts, 1)
 
@@ -36,30 +36,34 @@ def beginGame(maze, p, level, score, ghosts):
         print(maze)
         #print('Actions available: ', p.actions(maze))
         run, ghosts, p, maze, score, dead = eachRun(run, ghosts, p, maze, score, dead, level, "")
-        time.sleep(0.3)
+        #time.sleep(0.3)
     print("\nFood left: ", maze.remainingFood, "\t Score:  ", score)
     print(maze)
-    print('Actions available: ', p.actions(maze))
     if dead: print("You died! Game over")
     else: print('Congratulations! You ate all the food. Your final score is: ',score)
 
 if __name__ == "__main__":
     '''state = [['=', '=', '=', '=', '=', '=', '=', '=', '=', '=', '='],
-             ['|', 'G', '.', ' ', ' ', ' ', ' ', ' ', ' ', '.', '|'],   
+             ['|', 'G', '.', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '|'],   
              ['|', ' ', ' ', ' ', ' ', 'G', ' ', ' ', ' ', ' ', '|'],
              ['|', ' ', ' ', ' ', ' ', '.', ' ', ' ', ' ', ' ', '|'],
              ['|', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '|'],
              ['|', '.', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 'P', '|'],
              ['=', '=', '=', '=', '=', '=', '=', '=', '=', '=', '=']]
-'''
+
     state = [['=', '=', '=', '=', '='],
-             ['|', 'P', ' ', '.', '|'],
-             ['|', ' ', ' ', 'G', '|'],
+             ['|', 'P', ' ', ' ', '|'],
+             ['|', ' ', '.', 'G', '|'],
              ['=', '=', '=', '=', '=']]
+           '''  
+    state = [['=', '=', '=', '=', '='],
+             ['|', 'P', '.', 'G', '|'],
+             ['=', '=', '=', '=', '=']]
+             
     maze = M.Map(state)
     p = P.Pacman(maze.pacmanSpawn)
     ghosts = [G.Ghost(maze.ghostSpawn)]
     score = 100
-    level = 2
+    level = 1
     print("You are given ",score,'points')
     beginGame(maze, p, level, score, ghosts)

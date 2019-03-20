@@ -11,6 +11,7 @@ class Pacman(object):
     def actions(self, maze, nearestFood, prevMove = ""):  #Action allowed in next step
         print('Pacman is in position:  ', self.location)
         print("Print again the map: ")
+        for food in nearestFood: print(food.location)
         print(maze)
         act = []
         q = PriorityQueue()
@@ -20,31 +21,40 @@ class Pacman(object):
         if (maze.map[posX - 1][posY] != '=') and (maze.map[posX - 1][posY] != '|') and (maze.map[posX - 1][posY] != 'G') and (prevMove != "down"):
             mini = 999999999
             cpSelf = cp(self)
-            cpSelf.location[0] -= 1
+            t = list(cpSelf.location)
+            t[0] -= 1
+            cpSelf.location = tuple(t)
             for food in nearestFood: mini = min(mini, cpSelf.mahattanDistance(food))
             q.put([mini, 'up'])
 
         if (maze.map[posX + 1][posY] != '=') and (maze.map[posX + 1][posY] != '|') and (maze.map[posX + 1][posY] != 'G') and (prevMove != "up"):
             mini = 999999999
             cpSelf = cp(self)
-            cpSelf.location[0] += 1
+            t = list(cpSelf.location)
+            t[0] += 1
+            cpSelf.location = tuple(t)
             for food in nearestFood: mini = min(mini, cpSelf.mahattanDistance(food))
             q.put([mini, 'down'])
 
         if (maze.map[posX][posY - 1] != '=') and (maze.map[posX][posY - 1] != '|') and (maze.map[posX][posY - 1] != 'G') and (prevMove != "right"):
             mini = 999999999
             cpSelf = cp(self)
-            cpSelf.location[1] -= 1
+            t = list(cpSelf.location)
+            t[1] -= 1
+            cpSelf.location = tuple(t)
             for food in nearestFood: mini = min(mini, cpSelf.mahattanDistance(food))
             q.put([mini, 'left'])
 
         if (maze.map[posX][posY + 1] != '=') and (maze.map[posX][posY + 1] != '|') and (maze.map[posX][posY + 1] != 'G') and (prevMove != "left"):
             mini = 999999999
             cpSelf = cp(self)
-            cpSelf.location[1] += 1
+            t = list(cpSelf.location)
+            t[1] += 1
+            cpSelf.location = tuple(t)
             for food in nearestFood: mini = min(mini, cpSelf.mahattanDistance(food))
             q.put([mini, 'right'])
-        for x in q.queue: act.append(x[1])
+        print('food distance: ',q.queue)
+        while not q.empty(): act.append(q.get()[1])
         return act
 
     def runAway(self, maze, ghosts, nearestFood):
@@ -95,7 +105,9 @@ class Pacman(object):
         if level < 4: return False
         for ghost in ghosts:
             distance = self.mahattanDistance(ghost)
-            if distance < 2: return True
+            if distance < 2:
+                print('distance:  ', distance)
+                return True
         return False 
 
     def gameOver(self, maze):
@@ -135,9 +147,8 @@ class Pacman(object):
         
         #for depth in range(maxDepth):
         #print('depth: ',depth)
-        res = Pacman.IDS(self, level, maze, ghosts, nearestFood, 5, "")
+        res = Pacman.IDS(self, level, maze, ghosts, nearestFood, 10, "")
         print('RESSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS:  ',res)
-        #print('res: ',res)
         if res != 'cutoff' and res != 'fail' and res != 'run': return Pacman.doAction(self, maze, res)
                 
         if res == 'run': Pacman.runAway(self, maze, ghosts, nearestFood)

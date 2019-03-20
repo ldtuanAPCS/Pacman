@@ -36,13 +36,13 @@ class Ghost(object):
         return self.doAction(maze, act)
 
     #Find shortest distance to kill Pacman
-    def ghost_move(self, maze, posPacman):
+    def ghostMove(self, maze, posPacman):
         dX = posPacman[1] - self.location[1]
         dY = posPacman[0] - self.location[0]
-
-        for act in Ghost.actions(self, maze):
+        availableActions = Ghost.actions(self, maze)
+        for act in availableActions:
             if (act == 'up') and (dY < 0): return Ghost.doAction(self, maze, act)            
             if (act == 'left') and (dX < 0): return Ghost.doAction(self, maze, act)
             if (act == 'down') and (dY > 0): return Ghost.doAction(self, maze, act)
             if (act == 'right') and (dX > 0): return Ghost.doAction(self, maze, act)
-        return Ghost.randomAction(self, maze)
+        if availableActions: return Ghost.randomAction(self, maze)
