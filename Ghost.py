@@ -29,11 +29,11 @@ class Ghost(object):
         elif act == 'down': maze.move(self, self.location[0]+1, self.location[1])
         elif act == 'left': maze.move(self, self.location[0], self.location[1]-1)
         else: maze.move(self, self.location[0], self.location[1]+1)
-        
-    def randomAction(self, maze):
-        actionSet = Ghost.actions(self, maze)
-        act = actionSet[randint(0, len(self.actions(maze))-1)]
-        return self.doAction(maze, act)
+       
+#    def randomAction(self, maze):
+ #       actionSet = Ghost.actions(self, maze)
+  #      act = actionSet[randint(0, len(self.actions(maze))-1)]
+   #     return self.doAction(maze, act)
 
     #Find shortest distance to kill Pacman
     def ghostMove(self, maze, posPacman):
@@ -45,4 +45,4 @@ class Ghost(object):
             if (act == 'left') and (dX < 0): return Ghost.doAction(self, maze, act)
             if (act == 'down') and (dY > 0): return Ghost.doAction(self, maze, act)
             if (act == 'right') and (dX > 0): return Ghost.doAction(self, maze, act)
-        if availableActions: return Ghost.randomAction(self, maze)
+        #if availableActions: return Ghost.randomAction(self, maze)

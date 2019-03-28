@@ -3,5 +3,5 @@ class Food(object):
         self.location = x, y
 
     def __repr__(self):
-        st = "Food location: ", self.location[0], ", ", self.location[1] 
+        st = "Food location: ", self.location[0], self.location[1] 
         return str(st)
