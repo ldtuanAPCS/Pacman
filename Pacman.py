@@ -6,12 +6,9 @@ class Pacman(object):
     def __init__(self, initposition):
         self.live = 1
         self.location = initposition
+        self.onGhost = False
 
     def actions(self, maze, nearestFood):  #Action allowed in next step
-        #print('Pacman is in position:  ', self.location)
-        #print("Print again the map: ")
-        #for food in nearestFood: print(food.location)
-        #print(maze)
         act = []
         q = PriorityQueue()
         posX = self.location[0]
@@ -55,17 +52,6 @@ class Pacman(object):
         while not q.empty(): act.append(q.get()[1])
         return act
 
-    def runAway(self, maze, ghosts, nearestFood, stop):
-        availableActions = Pacman.actions(self, maze, nearestFood)
-        for ghost in ghosts:
-            direction = self.getDirection(ghost) #The direction will not be chosen by pacman
-            for d in direction:
-                for a in availableActions:
-                    if d == a: availableActions.remove(d)
-        if (availableActions): Pacman.doAction(self, maze, availableActions[0])
-        else: stop = True
- #       else: Pacman.doAction(self, maze, Pacman.actions(self, maze, nearestFood, ""))   #suppose to be end game here_need more work
-
     def doAction(self, maze, act):
         if act == 'up': maze.move(self, self.location[0]-1, self.location[1])
         elif act == 'down': maze.move(self, self.location[0]+1, self.location[1])
@@ -90,7 +76,7 @@ class Pacman(object):
                 elif x == mini:
                     chosenFood.append(f)
             else:
-                if x < mini and x < 3:
+                if x < mini and x <= 3:
                     chosenFood = [f]
                     mini = x
                 elif x == mini:
@@ -106,42 +92,24 @@ class Pacman(object):
         if dY > 0: direction.append('left')
         if dY < 0: direction.append('right')
         return direction
-    
-    def existGhostNearby(self, level, ghosts):
-        if level < 4: return False
-        for ghost in ghosts:
-            distance = self.mahattanDistance(ghost)
-            if distance < 2:
-                #right next to Pacman
-                return True
-        return False 
 
     def gameOver(self, maze):
         return (self.live == 0) | (maze.remainingFood == 0)
 
-    def DFS(self, maze, ghosts, nearestFood, depthLimit):
-        if Pacman.existGhostNearby(self, maze.level, ghosts): return 'run'
+    def IDS(self, maze, ghosts, nearestFood, depthLimit):
         for food in nearestFood:
             if self.location == food.location: return []
         if depthLimit == 0: 
-            #print('depth limit =0 --> return back')
             return 'cutoff'
         
         CutOff = False
         for act in Pacman.actions(self, maze, nearestFood):
             cpmaze = cp(maze)
             cpself = cp(self)
-            #print('In DFS, depth ', depthLimit,' have actions: ',z)            
-            #if act == 'left': print('go left')
-            #if act == 'right': print('go right')
-            #if act == 'up': print('go up')
-            #if act == 'down': print('go down')
             Pacman.doAction(cpself, cpmaze, act)
-            res = Pacman.DFS(cpself, cpmaze, ghosts, nearestFood, depthLimit - 1)
-            #print('result in depth limit: ',depthLimit,' action: ', act,' is: ',res)
+            res = Pacman.IDS(cpself, cpmaze, ghosts, nearestFood, depthLimit - 1)
             if res is 'cutoff': CutOff = True 
             elif res is not 'fail': return act
-        #print('return back')
         if CutOff: return 'cutoff'
         else: return 'fail'
 
@@ -150,15 +118,11 @@ class Pacman(object):
         for food in nearestFood:
             if self.location == food.location: return []
         for depth in range(1, maxDepth+1):
-            res = Pacman.DFS(self, maze, ghosts, nearestFood, depth)
-            #print('Ghost move first: ')
-            #print(maze)
+            res = Pacman.IDS(self, maze, ghosts, nearestFood, depth)
             if res != 'cutoff' and res != 'fail' and res != 'run':
-                print(res, depth)
                 Pacman.doAction(self, maze, res)
                 return stop
-        if res == 'run': Pacman.runAway(self, maze, ghosts, nearestFood, stop)
-        elif res == 'cutoff': 
+        if res == 'cutoff' or res == 'fail': 
             stop = True
             self.live = 0
             #end the game 

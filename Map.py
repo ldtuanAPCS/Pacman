@@ -2,8 +2,27 @@ import Pacman as P
 import Ghost as G
 from Food import Food as F
 from copy import deepcopy as cp
+import turtle
+
+#Set up screen & pen
+wn=turtle.Screen()
+wn.bgcolor("black")
+wn.title("Pacman")
+wn.setup(700,700)
+wn.tracer(0)
+s = turtle.Screen()
+s.register_shape('ghost.gif')
+s.register_shape('fruit.gif')
+s.register_shape('pacman.gif')
+
+class Pen(turtle.Turtle):
+    def __init__(self):
+        turtle.Turtle.__init__(self)
+        self.penup()
+        self.speed(0)
 
 initialVisit = []
+pen=Pen()
 
 class Map(object):
     def __init__(self, path):
@@ -51,13 +70,33 @@ class Map(object):
         y = item[1]
         return self.map[x][y]
 
-    def __str__(self):
-        value = ''
+    def printMaze(self, f):
         for i in range(self.height):
-            for j in range(self.width): value += self.map[i][j]
-            value += '\n'
-        return value
-    
+            for j in range(self.width):
+                char = self.map[i][j]
+                f.write(char)
+                screen_y=288-(i*21)
+                screen_x=-288+(j*21)
+                pen.goto(screen_x,screen_y)
+                if(char=='|' or char=='='):
+                    pen.shape("square")
+                    pen.color("white")
+                elif(char=='P'):
+                    pen.shape('pacman.gif')
+                    pen.stamp()
+                elif(char=='G'):
+                    pen.shape("ghost.gif")
+                    pen.stamp()
+                elif(char=='.'):
+                    pen.shape("fruit.gif")
+                    pen.stamp()
+                else:
+                    pen.shape('square')
+                    pen.color('black')
+                pen.stamp()
+            f.write('\n')
+        wn.update()
+
     def removeFood(self, x, y):
         for f in self.food:
             if (f.location[0] == x and f.location[1] == y): self.food.remove(f)
@@ -66,14 +105,19 @@ class Map(object):
         posX = target.location[0]
         posY = target.location[1]
         if isinstance(target, P.Pacman):
+            flag = False
             if self.map[x][y] is '.':
+                flag =True
                 self.remainingFood -= 1
                 self.removeFood(x ,y)
-                self.updateNewVisit()
             self.map[x][y] = 'P'
-            self.map[posX][posY] = ' '
+            if target.onGhost:
+                self.map[posX][posY] = 'G'
+                target.onGhost = False
+            else: self.map[posX][posY] = ' '
             target.location = x, y            
-            self.visited[x][y] = True
+            if flag: self.updateNewVisit()
+            else: self.visited[x][y] = True
         else:  #GHOST
             if self.map[x][y] is '.':
                 if target.onFood: self.map[posX][posY] = '.'
@@ -86,5 +130,3 @@ class Map(object):
                 else: self.map[posX][posY] = ' '
             self.map[x][y] = 'G'    
             target.location = x, y
-            #self.visited[posX][posY] = False
-            #self.visited[x][y] = True
